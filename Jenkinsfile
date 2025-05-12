@@ -17,7 +17,9 @@ pipeline {
             steps {
                 dir('code') {
                     sh '''
-                        apt-get update && apt-get install -y git unzip zip curl
+                        apt-get update && apt-get install -y git unzip zip curl sudo
+
+                        export COMPOSER_HOME=/tmp/composer
 
                         curl -sS https://getcomposer.org/installer | php
                         mv composer.phar /usr/local/bin/composer
