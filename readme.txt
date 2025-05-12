@@ -1,0 +1,2 @@
+Client CRUD - Documentation
+Le contrôleur contient 4 méthodes pour gérer les opérations CRUD des clients. On a utilisé l'annotation MapEntity pour faciliter la recherche des clients dans l'URL. De plus, la logique de sauvegarde des clients a été séparée dans un service afin de respecter le principe de responsabilité unique (SRP).

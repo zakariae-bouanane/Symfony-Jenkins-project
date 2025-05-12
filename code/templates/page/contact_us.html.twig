@@ -1,0 +1,28 @@
+{% extends 'layout.html.twig' %}
+{% block content %}
+    <div class="container">
+        {#{{ form(contact_form) }}#}
+        {{ form_start(contact_form) }}
+            <fieldset>
+                <legend>Contactez-nous</legend>
+                <div class="row">
+                    <div class="col-6">
+                        {{ form_row(contact_form.email_address, {
+                            attr: {
+                                class: 'custom-class',
+                                placeholder: 'Your@email.com'
+                            }
+                        }) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(contact_form.full_name) }}
+                    </div>
+                </div>
+                <div>
+                    {{ form_row(contact_form.message) }}
+                </div>
+            </fieldset>
+            <button class="btn btn-primary">Send</button>
+        {{ form_end(contact_form) }}
+    </div>
+{% endblock content %}

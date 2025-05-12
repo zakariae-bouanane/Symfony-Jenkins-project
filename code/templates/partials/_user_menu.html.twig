@@ -1,0 +1,21 @@
+{# templates/partials/_user_menu.html.twig #}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle"
+       data-bs-toggle="dropdown"
+       href="#" role="button"
+       aria-haspopup="true"
+       aria-expanded="false">Dropdown</a>
+    <div class="dropdown-menu">
+        {% if app.session.get('current_user') %}
+            <a class="dropdown-item" href="{{ url('app_expose_my_profile') }}">
+                {{ app.session.get('current_user')}}
+            </a>
+        {% endif %}
+        <a class="dropdown-item" href="#">Another action</a>
+        <a class="dropdown-item" href="#">Something else here</a>
+        {% if not app.session.get('current_user') %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{ url('app_login') }}">Se connecter</a>
+        {% endif %}
+    </div>
+</li>

@@ -1,0 +1,45 @@
+parameters:
+    app.administrator.default_email: '%env(APP_MAILER_ADMINISTRATOR)%'
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $adminFullName: "ADMINISTRATOR"
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+#            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+
+#    App\Password\PinGeneratorInterface: '@App\Password\PasswordGenerator'
+#    App\Password\PinGeneratorInterface:
+#        alias: App\Password\PasswordGenerator
+
+#    App\Password\PasswordResetHandler:
+#        arguments:
+#            $generator: '@App\Password\PinCodeGenerator'
+
+    App\Password\PasswordResetHandler:
+        arguments:
+            $fromEmailAddress: '%app.administrator.default_email%'
+#            $adminFullName: 'KHADIRI ISSAM'
+#            $generator: '@App\Password\PinCodeGenerator'
+#            $emailSenderObject: '%env(json:APP_ADMINISTRATOR_INFO)%'
+#        calls:
+#            - setLogger: ['@logger']
+
+#    App\Password\PasswordGenerator:
+#        tags: ['app.password_generator']
+
+#    App\Password\PinCodeGenerator:
+#        tags: [ 'app.password_generator' ]
+
+    _instanceof:
+        App\Password\PinGeneratorInterface:
+            tags: [ 'app.password_generator' ]
+            bind:
+                string $adminFullName: 'EHEI SYSADMIN'
