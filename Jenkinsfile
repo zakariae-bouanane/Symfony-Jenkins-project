@@ -29,8 +29,10 @@ pipeline {
                         # Move Composer to a writable location (use /tmp)
                         mv composer.phar /tmp/composer
 
-                        # Install dependencies and clear Symfony cache
-                        php /tmp/composer install
+                        # Install dependencies (ensure you are in the correct directory)
+                        php /tmp/composer install --no-interaction
+
+                        # Clear Symfony cache
                         php bin/console cache:clear
                     '''
                 }
