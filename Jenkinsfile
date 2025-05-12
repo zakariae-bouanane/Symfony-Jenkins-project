@@ -17,14 +17,20 @@ pipeline {
             steps {
                 dir('code') {
                     sh '''
+                        # Install necessary dependencies as root
                         apt-get update && apt-get install -y git unzip zip curl sudo
 
+                        # Set the Composer home directory to a writable location
                         export COMPOSER_HOME=/tmp/composer
 
+                        # Install Composer
                         curl -sS https://getcomposer.org/installer | php
-                        mv composer.phar /usr/local/bin/composer
 
-                        composer install
+                        # Move Composer to a writable location (use /tmp)
+                        mv composer.phar /tmp/composer
+
+                        # Install dependencies and clear Symfony cache
+                        php /tmp/composer install
                         php bin/console cache:clear
                     '''
                 }
