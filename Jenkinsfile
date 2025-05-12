@@ -49,8 +49,7 @@ pipeline {
 
         stage('Deliver') {
             steps {
-                # Replace this with your actual deliver script
-                sh './jenkins/scripts/deliver.sh'
+                sh './scripts/deliver.sh'
             }
         }
 

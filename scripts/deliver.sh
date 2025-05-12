@@ -1,46 +1,42 @@
 #!/usr/bin/env bash
 
-echo 'The following Maven command installs your Maven-built Java application'
-echo 'into the local Maven repository, which will ultimately be stored in'
-echo 'Jenkins''s local Maven repository (and the "maven-repository" Docker data'
-echo 'volume).'
+# Display the process
+echo 'The following Composer command installs the Symfony project dependencies.'
 set -x
-mvn jar:jar install:install help:evaluate -Dexpression=project.name
+composer install --working-dir=code
 set +x
 
-echo 'The following command extracts the value of the <name/> element'
-echo 'within <project/> of your Java/Maven project''s "pom.xml" file.'
+echo 'The following command clears the Symfony cache.'
 set -x
-NAME=`mvn -q -DforceStdout help:evaluate -Dexpression=project.name`
+php code/bin/console cache:clear --env=prod
 set +x
 
-echo 'The following command behaves similarly to the previous one but'
-echo 'extracts the value of the <version/> element within <project/> instead.'
+echo 'The following command runs Symfony migrations (if any) for the database.'
 set -x
-VERSION=`mvn -q -DforceStdout help:evaluate -Dexpression=project.version`
+php code/bin/console doctrine:migrations:migrate --no-interaction
 set +x
 
-# echo 'Building the Docker image.'
-# set -x
-# docker build -t ${NAME}:${VERSION} . 
-# set +x
-
-# echo 'Tagging the Docker image for DockerHub.'
-# DOCKER_USERNAME=your_dockerhub_username
-# set -x
-# docker tag ${NAME}:${VERSION} ${DOCKER_USERNAME}/${NAME}:${VERSION}
-# set +x
-
-# echo 'Pushing the Docker image to DockerHub.'
-# set -x
-# docker push ${DOCKER_USERNAME}/${NAME}:${VERSION}
-# set +x
-
-# echo 'Docker image ${DOCKER_USERNAME}/${NAME}:${VERSION} has been successfully pushed to DockerHub.'
-
-
-echo 'The following command runs and outputs the execution of your Java'
-echo 'application (which Jenkins built using Maven) to the Jenkins UI.'
+# Docker build process (adjust paths and tags based on your actual Symfony setup)
+echo 'Building the Docker image for Symfony project.'
 set -x
-java -jar target/${NAME}-${VERSION}.jar
+docker build -t symfony-app:v1.${BUILD_NUMBER} -f infra/php/Dockerfile code/
+set +x
+
+echo 'Tagging the Docker image for DockerHub.'
+DOCKER_USERNAME=your_dockerhub_username
+set -x
+docker tag symfony-app:v1.${BUILD_NUMBER} ${DOCKER_USERNAME}/symfony-app:v1.${BUILD_NUMBER}
+set +x
+
+echo 'Pushing the Docker image to DockerHub.'
+set -x
+docker push ${DOCKER_USERNAME}/symfony-app:v1.${BUILD_NUMBER}
+set +x
+
+echo 'Docker image has been successfully pushed to DockerHub.'
+
+# Optionally, running the Symfony application using Docker or directly in the container
+echo 'Running the Symfony application in Docker container (or locally if required).'
+set -x
+docker run -d -p 80:80 ${DOCKER_USERNAME}/symfony-app:v1.${BUILD_NUMBER}
 set +x
