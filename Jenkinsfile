@@ -15,14 +15,17 @@ pipeline {
     stages {
         stage('Install Dependencies & Clear Cache') {
             steps {
-                sh '''
-                    apt-get update && apt-get install -y git unzip zip curl
+                dir('code') {
+                    sh '''
+                        apt-get update && apt-get install -y git unzip zip curl
 
-                    curl -sS https://getcomposer.org/installer | php
-                    php composer.phar install --working-dir=code
+                        curl -sS https://getcomposer.org/installer | php
+                        mv composer.phar /usr/local/bin/composer
 
-                    php code/bin/console cache:clear
-                '''
+                        composer install
+                        php bin/console cache:clear
+                    '''
+                }
             }
         }
 
