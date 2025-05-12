@@ -6,9 +6,6 @@ pipeline {
         }
     }
 
-    triggers {
-        cron('0 * * * *') // Runs every hour
-    }
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerHub')
