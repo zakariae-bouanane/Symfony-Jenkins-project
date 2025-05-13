@@ -31,7 +31,8 @@ pipeline {
         stage('Install Dependencies & Clear Cache') {
             steps {
                 script {
-                    sh 'docker compose up --build -d'
+                    sh 'docker compose build symfony'
+                    sh 'docker compose up -d symfony'
                     sh 'docker compose exec -T symfony composer install --no-interaction --no-progress --optimize-autoloader'
                     sh 'docker compose exec symfony php bin/console cache:clear'
                 }
