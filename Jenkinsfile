@@ -15,26 +15,10 @@ pipeline {
     stages {
         stage('Install Dependencies & Clear Cache') {
             steps {
-                dir('code') {
-                    sh '''
-                        # Install necessary dependencies as root
-                        apt-get update && apt-get install -y git unzip zip curl sudo
-
-                        # Set the Composer home directory to a writable location
-                        export COMPOSER_HOME=/tmp/composer
-
-                        # Install Composer
-                        curl -sS https://getcomposer.org/installer | php
-
-                        # Move Composer to a writable location (use /tmp)
-                        mv composer.phar /tmp/composer
-
-                        # Install dependencies (ensure you are in the correct directory)
-                        php /tmp/composer install --no-interaction
-
-                        # Clear Symfony cache
-                        php bin/console cache:clear
-                    '''
+                script {
+                    sh 'docker compose up --build -d'
+                    sh 'docker compose exec symfony composer install'
+                    sh 'docker compose exec symfony php bin/console cache:clear'
                 }
             }
         }
