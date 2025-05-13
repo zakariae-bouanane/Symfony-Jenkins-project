@@ -42,13 +42,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh """
+                    sh '''
                         sonar-scanner \
                            -Dsonar.projectKey=symfony-app \
                            -Dsonar.sources=code \
                            -Dsonar.host.url=http://192.168.79.128:9000 \
                            -Dsonar.token=${SONAR_TOKEN}
-                    """
+                    '''
                 }
             }
         }
