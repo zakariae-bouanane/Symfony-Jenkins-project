@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'php:8.2-cli'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
 
 
     environment {
@@ -12,12 +7,32 @@ pipeline {
         DOCKER_CONFIG = '/tmp/.docker'
     }
 
+
+
     stages {
+
+        stage('Setup Docker') {
+            steps {
+                // Make sure Docker and Docker Compose are available
+                sh '''
+                    docker --version
+                    if ! command -v docker-compose &> /dev/null; then
+                        echo "Installing Docker Compose ${DOCKER_COMPOSE_VERSION}..."
+                        mkdir -p ~/.docker/cli-plugins/
+                        curl -SL "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/.docker/cli-plugins/docker-compose
+                        chmod +x ~/.docker/cli-plugins/docker-compose
+                    fi
+                    docker compose version
+                '''
+            }
+        }
+
+
         stage('Install Dependencies & Clear Cache') {
             steps {
                 script {
                     sh 'docker compose up --build -d'
-                    sh 'docker compose exec symfony composer install'
+                    sh 'docker compose exec -T symfony composer install --no-interaction --no-progress --optimize-autoloader'
                     sh 'docker compose exec symfony php bin/console cache:clear'
                 }
             }
