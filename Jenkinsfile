@@ -91,14 +91,14 @@ pipeline {
             }
         }
 
-        stage('Deploy with Ansible') {
-            steps {
-                sh '''
-                    apt-get update && apt-get install -y ansible
-
-                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
-                '''
-            }
+//        stage('Deploy with Ansible') {
+//            steps {
+//                sh '''
+//                    apt-get update && apt-get install -y ansible
+//
+//                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+//                '''
+//            }
         }
     }
 }
