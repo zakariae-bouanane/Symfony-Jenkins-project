@@ -46,6 +46,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
+                        export SONAR_USER_HOME=$WORKSPACE/.sonar
                         sonar-scanner \
                            -Dsonar.projectKey=symfony-app \
                            -Dsonar.sources=code \
