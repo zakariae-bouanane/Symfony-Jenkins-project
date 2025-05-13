@@ -1,15 +1,13 @@
 pipeline {
-//   agent any
-// 
-// 
-//     environment {
-//         DOCKERHUB_CREDENTIALS = credentials('dockerHub')
-//         DOCKER_CONFIG = '/tmp/.docker'
-//     }
-// 
-// 
-// 
-//     stages {
+   agent any
+ 
+ 
+     environment {
+         DOCKERHUB_CREDENTIALS = credentials('dockerHub')
+         DOCKER_CONFIG = '/tmp/.docker'
+     }
+
+     stages {
 // 
 //         stage('Setup Docker') {
 //             steps {
