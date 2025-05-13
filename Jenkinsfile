@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'sonarsource/sonar-scanner-cli'
-        }
-    }
+    agent any
 
 
     environment {
@@ -44,6 +40,11 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+            agent {
+                docker {
+                image 'sonarsource/sonar-scanner-cli'
+                }
+            }
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
