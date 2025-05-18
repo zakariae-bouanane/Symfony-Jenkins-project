@@ -1,14 +1,14 @@
 pipeline {
    agent any
- 
- 
+
+
      environment {
          DOCKERHUB_CREDENTIALS = credentials('dockerHub')
          DOCKER_CONFIG = '/tmp/.docker'
      }
 
      stages {
-// 
+//
 //         stage('Setup Docker') {
 //             steps {
 //                 // Make sure Docker and Docker Compose are available
@@ -24,8 +24,8 @@ pipeline {
 //                 '''
 //             }
 //         }
-// 
-// 
+//
+//
 //         stage('Install Dependencies & Clear Cache') {
 //             steps {
 //                 script {
@@ -57,39 +57,39 @@ pipeline {
 //            }
 //        }
 
-        stage('Deliver') {
-            steps {
-                sh './scripts/deliver.sh'
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                script {
-                    def name = 'symfony-app'
-                    def version = "v1.${BUILD_NUMBER}"
-
-                    sh "docker build -t ${name}:${version} -f infra/php/Dockerfile ."
-                }
-            }
-        }
-
-        stage('Docker Push') {
-            steps {
-                script {
-                    def name = 'symfony-app'
-                    def version = "v1.${BUILD_NUMBER}"
-
-                    withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                        sh """
-                            echo ${env.dockerHubPassword} | docker login -u ${env.dockerHubUser} --password-stdin
-                            docker tag ${name}:${version} ${env.dockerHubUser}/${name}:${version}
-                            docker push ${env.dockerHubUser}/${name}:${version}
-                        """
-                    }
-                }
-            }
-        }
+//         stage('Deliver') {
+//             steps {
+//                 sh './scripts/deliver.sh'
+//             }
+//         }
+// 
+//         stage('Docker Build') {
+//             steps {
+//                 script {
+//                     def name = 'symfony-app'
+//                     def version = "v1.${BUILD_NUMBER}"
+// 
+//                     sh "docker build -t ${name}:${version} -f infra/php/Dockerfile ."
+//                 }
+//             }
+//         }
+// 
+//         stage('Docker Push') {
+//             steps {
+//                 script {
+//                     def name = 'symfony-app'
+//                     def version = "v1.${BUILD_NUMBER}"
+// 
+//                     withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+//                         sh """
+//                             echo ${env.dockerHubPassword} | docker login -u ${env.dockerHubUser} --password-stdin
+//                             docker tag ${name}:${version} ${env.dockerHubUser}/${name}:${version}
+//                             docker push ${env.dockerHubUser}/${name}:${version}
+//                         """
+//                     }
+//                 }
+//             }
+//         }
 
         stage('Deploy with Ansible') {
                     steps {
