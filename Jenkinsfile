@@ -92,20 +92,14 @@ pipeline {
 //         }
 
         stage('Deploy with Ansible') {
-                    steps {
-                        sh '''
-                            if ! command -v ansible-playbook &> /dev/null; then
-                                echo "Installing Ansible..."
-                                sudo apt-get update
-                                sudo apt-get install -y ansible
-                            fi
+            steps {
+                sh '''
+                    echo "[local]
+                        localhost ansible_connection=local" > ansible/inventory.ini
 
-                            echo "[local]
-                                localhost ansible_connection=local" > ansible/inventory.ini
-
-                            ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
-                        '''
-                    }
-                }
+                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+                '''
+            }
+        }
     }
 }
