@@ -91,15 +91,12 @@ pipeline {
 //             }
 //         }
 
-        stage('Deploy with Ansible') {
-            steps {
-                sh '''
-                    echo "[local]
-                        localhost ansible_connection=local" > ansible/inventory.ini
-
-                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
-                '''
+            stage('Deploy with Ansible') {
+                steps {
+                    sh '''
+                        ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+                    '''
+                }
             }
-        }
     }
 }

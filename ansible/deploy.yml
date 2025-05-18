@@ -1,0 +1,12 @@
+- name: Deploy Symfony app with Docker Compose
+  hosts: local
+  tasks:
+    - name: Pull latest Docker images
+      command: docker compose pull
+      args:
+        chdir: "{{ playbook_dir }}/../"
+
+    - name: Restart Docker containers
+      command: docker compose up -d
+      args:
+        chdir: "{{ playbook_dir }}/../"
