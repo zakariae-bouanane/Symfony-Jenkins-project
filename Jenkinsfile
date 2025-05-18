@@ -37,25 +37,25 @@ pipeline {
 //             }
 //         }
 
-        stage('SonarQube Analysis') {
-            agent {
-                docker {
-                    image 'sonarsource/sonar-scanner-cli'
-                }
-            }
-            steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                        export SONAR_USER_HOME=$WORKSPACE/.sonar
-                        sonar-scanner \
-                           -Dsonar.projectKey=symfony-app \
-                           -Dsonar.sources=code \
-                           -Dsonar.host.url=http://192.168.79.128:9000 \
-                           -Dsonar.token=${SONAR_TOKEN}
-                    '''
-                }
-            }
-        }
+//       stage('SonarQube Analysis') {
+//            agent {
+//                docker {
+//                    image 'sonarsource/sonar-scanner-cli'
+//                }
+//            }
+//            steps {
+//                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+//                    sh '''
+//                        export SONAR_USER_HOME=$WORKSPACE/.sonar
+//                        sonar-scanner \
+//                           -Dsonar.projectKey=symfony-app \
+//                           -Dsonar.sources=code \
+//                           -Dsonar.host.url=http://192.168.79.128:9000 \
+//                           -Dsonar.token=${SONAR_TOKEN}
+//                    '''
+//                }
+//            }
+//        }
 
         stage('Deliver') {
             steps {
@@ -91,14 +91,21 @@ pipeline {
             }
         }
 
-//        stage('Deploy with Ansible') {
-//            steps {
-//                sh '''
-//                    apt-get update && apt-get install -y ansible
-//
-//                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
-//                '''
-//            }
-//        }
+        stage('Deploy with Ansible') {
+                    steps {
+                        sh '''
+                            if ! command -v ansible-playbook &> /dev/null; then
+                                echo "Installing Ansible..."
+                                sudo apt-get update
+                                sudo apt-get install -y ansible
+                            fi
+
+                            echo "[local]
+                                localhost ansible_connection=local" > ansible/inventory.ini
+
+                            ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+                        '''
+                    }
+                }
     }
 }
